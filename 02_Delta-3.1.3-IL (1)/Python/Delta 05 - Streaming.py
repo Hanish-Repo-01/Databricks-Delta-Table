@@ -253,18 +253,17 @@ for s in spark.streams.active:
 activityPath   = workingDir + "/activityCount.delta"
 checkpointPath = workingDir + "/activityCount.checkpoint"
 
-activityCountsQuery = (spark.readStream 
+activityCountsQuery = (spark.readStream
   .format("delta")
-  .load(FILL_IN)
-
-  FILL_IN 
-
+  .load(str(writePath))   
+  .groupBy("gt")
+  .count()
   .writeStream
-  .format(FILL_IN)
+  .format("delta")
   .option("checkpointLocation", checkpointPath)
-  .outputMode(FILL_IN)
+  .outputMode("complete")
   .queryName(streamB)
-  .start(FILL_IN)
+  .start(activityPath)
 )
 
 # COMMAND ----------
